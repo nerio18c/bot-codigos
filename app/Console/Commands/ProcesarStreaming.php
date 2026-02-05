@@ -14,15 +14,25 @@ class ProcesarStreaming extends Command
 
     public function handle()
     {
-        $centralEmail = 'margaret62pr@gmail.com';
+        $centralEmail = (string) env('IMAP_USERNAME', '');
+        if ($centralEmail === '') {
+            $this->error('IMAP_USERNAME no esta configurado en el .env');
+            return Command::FAILURE;
+        }
+        $imapPassword = (string) env('IMAP_PASSWORD', '');
+        if ($imapPassword === '') {
+            $this->error('IMAP_PASSWORD no esta configurado en el .env');
+            return Command::FAILURE;
+        }
+
         $client = Client::make([
-            'host'          => 'imap.gmail.com',
-            'port'          => 993,
-            'encryption'    => 'ssl',
-            'validate_cert' => true,
+            'host'          => env('IMAP_HOST', 'imap.gmail.com'),
+            'port'          => (int) env('IMAP_PORT', 993),
+            'encryption'    => env('IMAP_ENCRYPTION', 'ssl'),
+            'validate_cert' => (bool) env('IMAP_VALIDATE_CERT', true),
             'username'      => $centralEmail,
-            'password'      => 'yyinrherenaqgaas',
-            'protocol'      => 'imap'
+            'password'      => $imapPassword,
+            'protocol'      => env('IMAP_PROTOCOL', 'imap'),
         ]);
 
         $client->connect();
