@@ -81,6 +81,7 @@ class ProcesarStreaming extends Command
                 if ($plataforma && $pin && $email) {
                     // Evitar guardar correos de plataforma como email_cuenta
                     if ($this->esRemitentePlataforma($email)) {
+                        $message->setFlag('Seen');
                         continue;
                     }
                     $existing = DB::table('codigos_streaming')
